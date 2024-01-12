@@ -11,6 +11,7 @@ import { BsGithub, BsGoogle } from 'react-icons/bs'
 import Input from "../../components/inputs/Input";
 import Button from "@/app/components/Button";
 import AuthSocialButton from "./AuthSocialButton";
+import axios from "axios";
 
 type Variant = 'LOGIN' | 'REGISTER';
 
@@ -44,7 +45,7 @@ const AuthForm = () => {
     setIsLoading(true);
 
     if (variant === 'REGISTER') {
-      // Axios Register
+      axios.post('/api/register', data)
     }
 
     if (variant === 'LOGIN') {
@@ -80,6 +81,7 @@ const AuthForm = () => {
               label="Name"
               register={register}
               errors={errors}
+              disabled={isLoading}
             />
           )}
           <Input
@@ -88,6 +90,7 @@ const AuthForm = () => {
             type="email"
             register={register}
             errors={errors}
+            disabled={isLoading}
           />
           <Input
             id="password"
@@ -95,9 +98,13 @@ const AuthForm = () => {
             type="password"
             register={register}
             errors={errors}
+            disabled={isLoading}
           />
           <div>
-            <Button disabled={isLoading} fullWidth type="submit" >
+            <Button
+              disabled={isLoading}
+              fullWidth type="submit"
+            >
               {variant === 'LOGIN' ? 'Sign in' : 'Register'}
             </Button>
           </div>
