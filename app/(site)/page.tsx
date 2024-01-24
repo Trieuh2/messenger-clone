@@ -1,8 +1,7 @@
-import React from 'react';
 import Image from 'next/image';
 import AuthForm from './components/AuthForm';
 
-const Home: React.FC = () => {
+const Auth = () => {
   return (
     <div
       className="
@@ -42,4 +41,4 @@ const Home: React.FC = () => {
   );
 };
 
-export default Home;
+export default Auth;
