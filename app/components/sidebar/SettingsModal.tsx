@@ -11,6 +11,7 @@ import Input from '../inputs/Input';
 import Image from 'next/image';
 import { CldUploadButton } from 'next-cloudinary';
 import Button from '../Button';
+import clsx from 'clsx';
 
 interface SettingsModalProps {
   currentUser: User;
@@ -116,6 +117,9 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                     items-center
                     gap-x-3
                   "
+                  style={{
+                    pointerEvents: isLoading ? 'none' : 'auto',
+                  }}
                 >
                   <Image
                     width="48"
@@ -131,9 +135,25 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                     onUpload={handleUpload}
                     uploadPreset="tj43bbgj"
                   >
-                    <Button disabled={isLoading} secondary type="button">
+                    <div
+                      className={clsx(
+                        `
+                        flex
+                        justify-center
+                        px-3
+                        py-2
+                        text-sm
+                        font-semibold
+                        focus-visible:outline
+                        focus-visible:outline-2
+                        focus-visible:outline-offset-2`,
+                        isLoading
+                          ? 'opacity-50 cursor-default'
+                          : 'opacity-100 cursor-pointer'
+                      )}
+                    >
                       Change
-                    </Button>
+                    </div>
                   </CldUploadButton>
                 </div>
               </div>
@@ -149,16 +169,10 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                 gap-x-6
               "
             >
-              <Button
-                disabled={isLoading}
-                secondary onClick={onClose}
-              >
+              <Button disabled={isLoading} secondary onClick={onClose}>
                 Cancel
               </Button>
-              <Button
-                disabled={isLoading}
-                type="submit"
-              >
+              <Button disabled={isLoading} type="submit">
                 Submit
               </Button>
             </div>
