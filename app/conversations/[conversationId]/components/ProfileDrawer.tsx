@@ -242,9 +242,10 @@ const ProfileDrawer: React.FC<ProfileDrawerProps> = ({
                                   >
                                     Emails
                                   </dt>
-                                  {data.users.map((user) => {
+                                  {data.users.map((user, index) => {
                                     return (
                                       <dd
+                                        key={index}
                                         className="
                                           mt-1
                                           text-sm
