@@ -41,8 +41,19 @@ const MessageInput = forwardRef<MessageInputRef, MessageInputProps>(
     const MAX_HEIGHT_REM = 8;
     const BASE_FONT_SIZE = 16;
 
+    const resizeTextarea = (textareaElement: HTMLTextAreaElement) => {
+      textareaElement.style.height = '0';
+      const newHeight = Math.min(
+        Math.max(textareaElement.scrollHeight / BASE_FONT_SIZE, MIN_HEIGHT_REM),
+        MAX_HEIGHT_REM
+      );
+      textareaElement.style.height = `${newHeight}rem`;
+    };
+
     const resetTextareaHeight = () => {
-      const textareaElement = document.getElementById(id);
+      const textareaElement = document.getElementById(
+        id
+      ) as HTMLTextAreaElement;
 
       if (textareaElement) {
         textareaElement.style.height = `${MIN_HEIGHT_REM}rem`;
@@ -59,33 +70,46 @@ const MessageInput = forwardRef<MessageInputRef, MessageInputProps>(
 
     const handleInput = (event: ChangeEvent<HTMLTextAreaElement>) => {
       setTimeout(() => {
-        event.target.style.height = '0';
-        const newHeight = Math.min(
-          Math.max(event.target.scrollHeight / BASE_FONT_SIZE, MIN_HEIGHT_REM),
-          MAX_HEIGHT_REM
-        );
-        event.target.style.height = `${newHeight}rem`;
-
-        if (event.target.value.trim() === '') {
-          resetTextareaHeight();
-        }
+        resizeTextarea(event.target);
       }, 0);
     };
 
     useEffect(() => {
-      setContent(watchedMessage);
-    }, [watchedMessage]);
+      const textareaElement = document.getElementById(
+        id
+      ) as HTMLTextAreaElement;
+
+      if (textareaElement) {
+        setContent(watchedMessage);
+        resizeTextarea(textareaElement);
+      }
+    }, [watchedMessage, id]);
+
+    useEffect(() => {
+      const textareaElement = document.getElementById(
+        id
+      ) as HTMLTextAreaElement;
+      if (textareaElement) {
+        textareaElement.addEventListener('keyup', (event) => {
+          if (event.key === 'Backspace') {
+            resizeTextarea(textareaElement);
+          }
+        });
+      }
+
+      return () => {
+        if (textareaElement) {
+          textareaElement.removeEventListener('keyup', (event) => {
+            if (event.key === 'Backspace') {
+              resizeTextarea(textareaElement);
+            }
+          });
+        }
+      };
+    }, [id]);
 
     useImperativeHandle(ref, () => ({
-      resetTextareaHeight: () => {
-        const textareaElement = document.getElementById(
-          id
-        ) as HTMLTextAreaElement;
-
-        if (textareaElement) {
-          textareaElement.style.height = `${MIN_HEIGHT_REM}rem`;
-        }
-      },
+      resetTextareaHeight,
     }));
 
     return (
