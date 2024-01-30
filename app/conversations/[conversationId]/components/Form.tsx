@@ -4,30 +4,35 @@ import useConversation from '@/app/hooks/useConversation';
 import axios from 'axios';
 import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
 import { HiPaperAirplane, HiPhoto } from 'react-icons/hi2';
-import MessageInput from './MessageInput';
+import MessageInput, { MessageInputRef } from './MessageInput';
 import { CldUploadButton } from 'next-cloudinary';
+import { useRef } from 'react';
 
 const Form = () => {
   const { conversationId } = useConversation();
+  const messageInputRef = useRef<MessageInputRef>(null);;
 
   const {
     register,
     handleSubmit,
     setValue,
     formState: { errors },
+    watch,
   } = useForm<FieldValues>({
     defaultValues: {
       message: '',
     },
   });
 
-  const onSubmit: SubmitHandler<FieldValues> = (data) => {
-    setValue('message', '', { shouldValidate: true });
+  const watchedMessage = watch('message');
 
+  const onSubmit: SubmitHandler<FieldValues> = (data) => {
     axios.post('/api/messages', {
       ...data,
       conversationId,
     });
+    setValue('message', '', { shouldValidate: true });
+    messageInputRef.current?.resetTextareaHeight();
   };
 
   const handleUpload = (result: any) => {
@@ -60,7 +65,14 @@ const Form = () => {
       </CldUploadButton>
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="flex items-center gap-2 lg:gap-4 w-full"
+        className="
+          flex
+          items-center 
+          gap-2 
+          lg:gap-4
+          w-full
+          max-h-32
+        "
       >
         <MessageInput
           id="message"
@@ -68,6 +80,9 @@ const Form = () => {
           errors={errors}
           required
           placeholder="Write a message"
+          onEnterPress={handleSubmit(onSubmit)}
+          watchedMessage={watchedMessage}
+          ref={messageInputRef}
         />
         <button
           type="submit"
