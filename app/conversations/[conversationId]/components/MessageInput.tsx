@@ -64,49 +64,19 @@ const MessageInput = forwardRef<MessageInputRef, MessageInputProps>(
       if (event.key === 'Enter' && !event.shiftKey) {
         event.preventDefault();
         onEnterPress();
+        setContent('');
         resetTextareaHeight();
       }
     };
 
     const handleInput = (event: ChangeEvent<HTMLTextAreaElement>) => {
-      setTimeout(() => {
-        resizeTextarea(event.target);
-      }, 0);
+      setContent(event.target.value);
+      resizeTextarea(event.target);
     };
 
     useEffect(() => {
-      const textareaElement = document.getElementById(
-        id
-      ) as HTMLTextAreaElement;
-
-      if (textareaElement) {
-        setContent(watchedMessage);
-        resizeTextarea(textareaElement);
-      }
-    }, [watchedMessage, id]);
-
-    useEffect(() => {
-      const textareaElement = document.getElementById(
-        id
-      ) as HTMLTextAreaElement;
-      if (textareaElement) {
-        textareaElement.addEventListener('keyup', (event) => {
-          if (event.key === 'Backspace') {
-            resizeTextarea(textareaElement);
-          }
-        });
-      }
-
-      return () => {
-        if (textareaElement) {
-          textareaElement.removeEventListener('keyup', (event) => {
-            if (event.key === 'Backspace') {
-              resizeTextarea(textareaElement);
-            }
-          });
-        }
-      };
-    }, [id]);
+      setContent(watchedMessage);
+    }, [watchedMessage]);
 
     useImperativeHandle(ref, () => ({
       resetTextareaHeight,
@@ -121,6 +91,7 @@ const MessageInput = forwardRef<MessageInputRef, MessageInputProps>(
           placeholder={placeholder}
           value={content}
           onInput={handleInput}
+          onKeyDown={handleKeyDown}
           className="
           text-black
             font-light
@@ -134,8 +105,8 @@ const MessageInput = forwardRef<MessageInputRef, MessageInputProps>(
             focus:outline-none
             overflow-x-hidden
             resize-none
+            scroll-smooth
           "
-          onKeyDown={handleKeyDown}
         />
       </div>
     );
