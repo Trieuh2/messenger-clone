@@ -65,6 +65,10 @@ const MessageInput = forwardRef<MessageInputRef, MessageInputProps>(
           MAX_HEIGHT_REM
         );
         event.target.style.height = `${newHeight}rem`;
+
+        if (event.target.value.trim() === '') {
+          resetTextareaHeight();
+        }
       }, 0);
     };
 
