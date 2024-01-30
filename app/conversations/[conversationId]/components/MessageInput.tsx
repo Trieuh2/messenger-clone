@@ -26,7 +26,7 @@ interface MessageInputProps {
 }
 
 const MessageInput = forwardRef<MessageInputRef, MessageInputProps>(
-  (props, ref) => {
+  function MessageInput(props, ref) {
     const {
       placeholder,
       id,
@@ -113,5 +113,7 @@ const MessageInput = forwardRef<MessageInputRef, MessageInputProps>(
     );
   }
 );
+
+MessageInput.displayName = 'MessageInput';
 
 export default MessageInput;
