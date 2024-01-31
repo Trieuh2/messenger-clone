@@ -32,7 +32,11 @@ const MessageBox: React.FC<MessageBoxProps> = ({ data, isLast }) => {
   const body = clsx('flex flex-col gap-2', isOwn && 'items-end');
 
   const message = clsx(
-    'text-sm max-w-2xl break-words',
+    `text-sm 
+    max-w-2xl
+    break-words
+    whitespace-break-spaces
+    `,
     isOwn ? 'bg-sky-500 text-white' : 'bg-gray-100',
     data.image ? 'rounded p-0' : 'rounded-2xl py-2 px-3'
   );
