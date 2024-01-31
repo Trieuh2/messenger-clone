@@ -107,6 +107,7 @@ const MessageInput = forwardRef<MessageInputRef, MessageInputProps>(
             resize-none
             scroll-smooth
           "
+          maxLength={4096}
         />
       </div>
     );
