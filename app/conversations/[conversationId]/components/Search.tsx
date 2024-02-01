@@ -34,7 +34,7 @@ const Search: React.FC<SearchProps> = ({ searchBarOpen, onClick }) => {
           transition-opacity
           ease-in-out
           transform
-          duration-1000
+          duration-[1100ms]
           ${searchBarOpen ? ' opacity-100' : 'opacity-0 pointer-events-none'}
         `}
         maxLength={4096}
