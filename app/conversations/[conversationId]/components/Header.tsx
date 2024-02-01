@@ -108,6 +108,7 @@ const Header: React.FC<HeaderProps> = ({ conversation }) => {
           <Search
             searchBarOpen={searchBarOpen}
             onClick={() => toggleSearch()}
+            onClose={() => setSearchBarOpen(false)}
           />
           <HiEllipsisHorizontal
             size={32}

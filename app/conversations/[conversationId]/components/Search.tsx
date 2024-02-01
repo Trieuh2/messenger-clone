@@ -1,13 +1,46 @@
 'use client';
 
+import { useEffect, useRef, useState } from 'react';
 import { IoSearch } from 'react-icons/io5';
 
 interface SearchProps {
   searchBarOpen: boolean;
   onClick: () => void;
+  onClose: () => void;
 }
 
-const Search: React.FC<SearchProps> = ({ searchBarOpen, onClick }) => {
+const Search: React.FC<SearchProps> = ({ searchBarOpen, onClick, onClose }) => {
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [content, setContent] = useState('');
+
+  const handleInput = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setContent(event.target.value);
+  };
+
+  useEffect(() => {
+    if (searchBarOpen && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [searchBarOpen]);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        inputRef.current &&
+        !inputRef.current.contains(event.target as Node)
+      ) {
+        onClose();
+      }
+    }
+
+    // Bind the event listener
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      // Unbind the event listener on clean up
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [inputRef, onClose]);
+
   return (
     <div
       className={`
@@ -19,6 +52,7 @@ const Search: React.FC<SearchProps> = ({ searchBarOpen, onClick }) => {
       `}
     >
       <input
+        ref={inputRef}
         placeholder="Search"
         className={`
           pl-10
@@ -39,6 +73,8 @@ const Search: React.FC<SearchProps> = ({ searchBarOpen, onClick }) => {
         `}
         maxLength={4096}
         style={{ visibility: searchBarOpen ? 'visible' : 'hidden' }}
+        value={content}
+        onChange={handleInput}
       />
 
       <div
@@ -67,8 +103,6 @@ const Search: React.FC<SearchProps> = ({ searchBarOpen, onClick }) => {
       </div>
     </div>
   );
-
-  
 };
 
 export default Search;
