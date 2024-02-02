@@ -1,20 +1,54 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { FullMessageType } from '@/app/types';
+import { Dispatch, SetStateAction, useEffect, useRef } from 'react';
+import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
 import { IoSearch } from 'react-icons/io5';
 
 interface SearchProps {
   searchBarOpen: boolean;
   onClick: () => void;
   onClose: () => void;
+  messages: FullMessageType[];
+  setSearchTargetId: Dispatch<SetStateAction<string>>;
 }
 
-const Search: React.FC<SearchProps> = ({ searchBarOpen, onClick, onClose }) => {
+const Search: React.FC<SearchProps> = ({
+  searchBarOpen,
+  onClick,
+  onClose,
+  messages,
+  setSearchTargetId,
+}) => {
   const inputRef = useRef<HTMLInputElement>(null);
-  const [content, setContent] = useState('');
 
-  const handleInput = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setContent(event.target.value);
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+  } = useForm<FieldValues>({
+    defaultValues: {
+      searchQuery: '',
+    },
+  });
+
+  const onSubmit: SubmitHandler<FieldValues> = async (data) => {
+    setValue('searchQuery', '', { shouldValidate: true });
+
+    if (data.searchQuery) {
+      const keywords = data.searchQuery.split(' ');
+      const regexPattern = keywords.join('|');
+      const regex = new RegExp(regexPattern, 'i');
+
+      let filteredMessages = messages.filter(
+        (message) => message.body && regex.test(message.body)
+      );
+
+      if (filteredMessages.length != 0) {
+        setSearchTargetId(filteredMessages[0].id);
+      }
+    }
   };
 
   useEffect(() => {
@@ -33,75 +67,88 @@ const Search: React.FC<SearchProps> = ({ searchBarOpen, onClick, onClose }) => {
       }
     }
 
-    // Bind the event listener
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
-      // Unbind the event listener on clean up
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [inputRef, onClose]);
 
   return (
-    <div
-      className={`
-      flex
-      items-center
-      w-full
-      h-full
-      px-3
-      `}
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className="
+        flex
+        items-center 
+        gap-2 
+        lg:gap-4
+        w-full
+        max-h-32
+      "
     >
-      <input
-        ref={inputRef}
-        placeholder="Search"
-        className={`
-          pl-10
-          text-gray-800
-          bg-gray-100
-          font-light
-          py-2
-          w-full
-          rounded-2xl
-          focus:outline-none
-          overflow-hidden
-          resize-none
-          transition-opacity
-          ease-in-out
-          transform
-          duration-[1100ms]
-          ${searchBarOpen ? ' opacity-100' : 'opacity-0 pointer-events-none'}
-        `}
-        maxLength={4096}
-        style={{ visibility: searchBarOpen ? 'visible' : 'hidden' }}
-        value={content}
-        onChange={handleInput}
-      />
-
       <div
+        id="searchQuery"
+        {...register('searchQuery')}
         className={`
-          relative
-          transition-all
-          duration-500
-          ease-in-out
-          shrink-0
-          pl-3
-          ${
-            searchBarOpen
-              ? 'right-full translate-x-full'
-              : 'right-8 translate-x-full'
-          }`}
+          flex
+          items-center
+          w-full
+          h-full
+          px-3
+        `}
       >
-        <IoSearch
-          size={24}
-          onClick={onClick}
+        <input
+          id="searchQuery"
+          autoComplete="searchQuery"
+          {...register('searchQuery')}
+          ref={inputRef}
+          placeholder="Search"
           className={`
-            text-sky-500
-            cursor-pointer
-            hover:text-sky-600
-          `}
+            pl-10
+            text-gray-800
+            bg-gray-100
+            font-light
+            py-2
+            w-full
+            rounded-2xl
+            focus:outline-none
+            overflow-hidden
+            resize-none
+            transition-opacity
+            ease-in-out
+            transform
+            duration-[1200ms]
+            ${searchBarOpen ? ' opacity-100' : 'opacity-0 pointer-events-none'}
+        `}
+          maxLength={4096}
+          style={{ visibility: searchBarOpen ? 'visible' : 'hidden' }}
         />
+
+        <div
+          className={`
+            relative
+            transition-all
+            duration-500
+            ease-in-out
+            shrink-0
+            pl-3
+            ${
+              searchBarOpen
+                ? 'right-full translate-x-full'
+                : 'right-8 translate-x-full'
+            }`}
+        >
+          <IoSearch
+            size={24}
+            onClick={onClick}
+            className={`
+              text-sky-500
+              cursor-pointer
+              hover:text-sky-600
+            `}
+          />
+        </div>
       </div>
-    </div>
+    </form>
   );
 };
 

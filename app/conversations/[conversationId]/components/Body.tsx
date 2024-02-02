@@ -2,20 +2,27 @@
 
 import useConversation from '@/app/hooks/useConversation';
 import { FullMessageType } from '@/app/types';
-import { useEffect, useRef, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useRef } from 'react';
 import MessageBox from './MessageBox';
 import axios from 'axios';
 import { pusherClient } from '@/app/libs/pusher';
 import { find } from 'lodash';
 
 interface BodyProps {
-  initialMessages: FullMessageType[];
+  messages: FullMessageType[];
+  setMessages: Dispatch<SetStateAction<FullMessageType[]>>;
+  setSearchTargetId: Dispatch<SetStateAction<string>>;
+  searchTargetId: string;
 }
 
-const Body: React.FC<BodyProps> = ({ initialMessages }) => {
-  const [messages, setMessages] = useState(initialMessages);
+const Body: React.FC<BodyProps> = ({
+  messages,
+  setMessages,
+  setSearchTargetId,
+  searchTargetId,
+}) => {
   const bottomRef = useRef<HTMLDivElement>(null);
-
+  const messageRefs = useRef<{ [key: string]: HTMLElement | null }>({});
   const { conversationId } = useConversation();
 
   useEffect(() => {
@@ -62,14 +69,33 @@ const Body: React.FC<BodyProps> = ({ initialMessages }) => {
     };
   }, [conversationId]);
 
+  useEffect(() => {
+    if (searchTargetId && messageRefs.current[searchTargetId]) {
+      const targetMessage = messageRefs.current[searchTargetId];
+
+      if (targetMessage) {
+        targetMessage.scrollIntoView({
+          behavior: 'smooth',
+        });
+      }
+      setSearchTargetId('');
+    }
+  }, [searchTargetId]);
+
   return (
     <div className="flex-1 overflow-y-auto">
       {messages.map((message, i) => (
-        <MessageBox
-          isLast={i === messages.length - 1}
+        <div
+          ref={(el) => (messageRefs.current[message.id] = el)}
           key={message.id}
-          data={message}
-        />
+          className="p-0 m-0"
+        >
+          <MessageBox
+            isLast={i === messages.length - 1}
+            key={message.id}
+            data={message}
+          />
+        </div>
       ))}
       <div ref={bottomRef} className="pt-4" />
     </div>

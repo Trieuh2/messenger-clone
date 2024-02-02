@@ -5,20 +5,33 @@ import AvatarGroup from '@/app/components/AvatarGroup';
 import useOtherUser from '@/app/hooks/useOtherUser';
 import { Conversation, User } from '@prisma/client';
 import Link from 'next/link';
-import { useCallback, useMemo, useState } from 'react';
+import {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useMemo,
+  useState,
+} from 'react';
 import { HiChevronLeft, HiEllipsisHorizontal } from 'react-icons/hi2';
 import ProfileDrawer from './ProfileDrawer';
 import useActiveList from '@/app/hooks/useActiveList';
 import Search from './Search';
 import clsx from 'clsx';
+import { FullMessageType } from '@/app/types';
 
 interface HeaderProps {
   conversation: Conversation & {
     users: User[];
   };
+  messages: FullMessageType[];
+  setSearchTargetId: Dispatch<SetStateAction<string>>;
 }
 
-const Header: React.FC<HeaderProps> = ({ conversation }) => {
+const Header: React.FC<HeaderProps> = ({
+  conversation,
+  messages,
+  setSearchTargetId,
+}) => {
   const otherUser = useOtherUser(conversation);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [searchBarOpen, setSearchBarOpen] = useState(false);
@@ -109,6 +122,8 @@ const Header: React.FC<HeaderProps> = ({ conversation }) => {
             searchBarOpen={searchBarOpen}
             onClick={() => toggleSearch()}
             onClose={() => setSearchBarOpen(false)}
+            messages={messages}
+            setSearchTargetId={setSearchTargetId}
           />
           <HiEllipsisHorizontal
             size={32}
@@ -116,11 +131,11 @@ const Header: React.FC<HeaderProps> = ({ conversation }) => {
               setDrawerOpen(true);
             }}
             className="
-                text-sky-500
-                cursor-pointer
-                hover:text-sky-600
-                transition
-              "
+              text-sky-500
+              cursor-pointer
+              hover:text-sky-600
+              transition
+            "
           />
         </div>
       </div>
