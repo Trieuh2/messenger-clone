@@ -28,6 +28,7 @@ export async function GET(request: Request, { params }: { params: IParams }) {
 
     return NextResponse.json(messages);
   } catch (error: any) {
-    return [];
+    console.log(error, 'ERROR_FETCHING_MESSAGES');
+    return new NextResponse('Internal Error', { status: 500 });
   }
 }
