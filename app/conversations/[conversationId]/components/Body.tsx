@@ -67,7 +67,7 @@ const Body: React.FC<BodyProps> = ({
       pusherClient.unbind('messages:new', messageHandler);
       pusherClient.unbind('message:update', updateMessageHandler);
     };
-  }, [conversationId]);
+  }, [conversationId, setMessages]);
 
   useEffect(() => {
     if (searchTargetId && messageRefs.current[searchTargetId]) {
@@ -80,7 +80,7 @@ const Body: React.FC<BodyProps> = ({
       }
       setSearchTargetId('');
     }
-  }, [searchTargetId]);
+  }, [searchTargetId, setSearchTargetId]);
 
   return (
     <div className="flex-1 overflow-y-auto">
