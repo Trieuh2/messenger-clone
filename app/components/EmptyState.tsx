@@ -1,3 +1,5 @@
+import { BsChatLeftDotsFill } from 'react-icons/bs';
+
 const EmptyState = () => {
   return (
     <div
@@ -20,8 +22,10 @@ const EmptyState = () => {
           items-center
           flex
           flex-col
+          gap-3
         "
       >
+        <BsChatLeftDotsFill size={64} style={{ color: '#0266C8' }} />
         <h3
           className="
             mt-2
