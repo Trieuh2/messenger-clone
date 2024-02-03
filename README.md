@@ -1,36 +1,85 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+## Real-Time Messenger Clone: Next.js 14, React, Tailwind, Prisma, MongoDB, NextAuth, OAuth, Pusher
 
-## Getting Started
+This is a repository for a Real-Time Messenger Clone built with Next.js 14, React, Tailwind, Prisma, MongoDB, NextAuth, OAuth and Pusher. The foundation of this application's implementation was guided by [Antonio Erdeljac's Messenger Clone tutorial](https://github.com/AntonioErdeljac/next13-messenger).
 
-First, run the development server:
+Key features:
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- Real-time messaging, user status and read receipts via [Pusher](https://pusher.com/)
+- Message attachments and file sharing
+- File and Image upload via [Cloudinary CDN](https://cloudinary.com/)
+- Group chat or one-on-one messaging
+- Online/offline user statuses
+- User profile and customization and settings
+- Tailwind design for sleek UI
+- Tailwind animations and transition effects
+- Full responsiveness for all device sizes
+- Credential authentication with [NextAuth](https://next-auth.js.org/)
+- Google and GitHub authentication integration (OAuth)
+- Server error handling with [react-hot-toast](https://react-hot-toast.com/) notifications
+
+Additional features (originally implemented):
+
+- Updated and support for [Next.js 14 (App Router)](https://nextjs.org/docs/app) development
+- Client-sided message searching
+- Added API routing for messages/conversation client-server interactions
+- Fixed message rendering to support more edge cases
+- Improved Profile drawer information display for group chats
+
+### Cloning the repository
+
+```shell
+git clone https://github.com/Trieuh2/messenger-clone.git
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Install packages
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```shell
+npm i
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+### Setup .env file
 
-## Learn More
+Create a .env file in the root of your app folder or use these variables on your selected platform. This application uses NextAuth, Pusher, Cloudinary, GitHub (OAuth) and Google (OAuth).
 
-To learn more about Next.js, take a look at the following resources:
+```js
+DATABASE_URL=
+NEXTAUTH_SECRET=
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+NEXT_PUBLIC_PUSHER_APP_KEY=
+PUSHER_APP_ID=
+PUSHER_SECRET=
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=
 
-## Deploy on Vercel
+GITHUB_ID=
+GITHUB_SECRET=
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+### Setup Prisma
+
+```shell
+npx prisma db push
+```
+
+### Start the app
+
+```shell
+npm run dev
+```
+
+## Available commands
+
+Running commands with npm `npm run [command]`
+
+| command | description                              |
+| :------ | :--------------------------------------- |
+| `dev`   | Starts a development instance of the app |
+
+## Deploying a clone on Vercel
+
+To host your own copy of this application, perform the install and setup steps previously mentioned and deploy on your preferred platform. The [Vercel Platform](https://vercel.com) is a simple option from the creators of Next.js and hosts the deployments seen on this repository.
+
+For hosting your own copy on Vercel, please ensure that the .env variables are included via a .env file uploaded to your cloned repository OR [manually declaring the values](https://vercel.com/docs/projects/environment-variables) in the Vercel Project Settings.
